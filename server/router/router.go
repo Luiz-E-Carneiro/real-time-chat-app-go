@@ -5,6 +5,7 @@ import (
 	"server/internal/user"
 )
 
+// global Gin router instance
 var r *gin.Engine
 
 func InitRouter(userHandler *user.Handler){
@@ -15,6 +16,7 @@ func InitRouter(userHandler *user.Handler){
 	r.GET("/users/logout", userHandler.Logout)
 }
 
+// run the server
 func Start(addr string) error {
 	return r.Run(addr)
 }

@@ -22,6 +22,7 @@ func NewRepository(db DBTX) Repository {
 	return &repository{db: db}
 }
 
+// create a new user in the database
 func (r *repository) CreateUser(ctx context.Context, user *User) (*User, error) {
 
 	var lastInsertID int64
@@ -36,11 +37,13 @@ func (r *repository) CreateUser(ctx context.Context, user *User) (*User, error) 
 	return user, nil
 }
 
+// fetch a user based on email
 func (r *repository) GetUserByEmail(ctx context.Context, email string) (*User, error) {
 	u := User{}
 
 	query := `SELECT id, username, email, password FROM users WHERE email = $1`
 
+	// query the single row and scan the results into the User struct
 	err := r.db.QueryRowContext(ctx, query, email).Scan(&u.ID, &u.Username, &u.Email, &u.PasswordHash)
 
 	if err != nil {
