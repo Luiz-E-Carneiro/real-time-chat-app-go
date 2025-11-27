@@ -5,6 +5,12 @@ import (
 	"server/util"
 	"strconv"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+)
+
+const (
+	secretKey = "my_master_secret_only_best_wow_key" //Not secure, for demo purposes only
 )
 
 type service struct {
@@ -12,9 +18,9 @@ type service struct {
 	timeout time.Duration
 }
 
-func NewService(repo Repository) Service {
+func NewService(repository Repository) Service {
 	return &service{
-		repo,
+		repository,
 		time.Duration(2) * time.Second,
 	}
 }
@@ -48,4 +54,43 @@ func (s *service) CreateUser(ctx context.Context, req *CreateUserReq) (*CreateUs
 	}
 
 	return res, nil
+}
+
+type jwtCustomClaims struct {
+	UserID   string `json:"user_id"`
+	Username string `json:"username"`
+	jwt.RegisteredClaims
+}
+
+func (s *service) Login(c context.Context, req *LoginUserReq) (*LoginUserRes, error) {
+	ctx, cancel := context.WithTimeout(c, s.timeout)
+	defer cancel()
+
+	u, err := s.Repository.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		return &LoginUserRes{}, err
+	}
+
+	err = util.CheckPasswordHash(req.Password, u.PasswordHash)
+
+	if err != nil {
+		return &LoginUserRes{}, err
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtCustomClaims{
+		UserID:   strconv.Itoa(int(u.ID)),
+		Username: u.Username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    strconv.Itoa(int(u.ID)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		},
+	})
+
+	sign_string, err := token.SignedString([]byte(secretKey))
+
+	if err != nil {
+		return &LoginUserRes{}, err
+	}
+
+	return &LoginUserRes{accessToken: sign_string, ID: strconv.Itoa(int(u.ID)), Username: u.Username}, nil
 }
