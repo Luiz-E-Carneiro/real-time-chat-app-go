@@ -4,6 +4,7 @@ import (
 	"log"
 	"server/db"
 	"server/internal/user"
+	"server/internal/ws"
 	"server/router"
 )
 
@@ -19,6 +20,9 @@ func main() {
 	userServ := user.NewService(userRep)
 	userHandler := user.NewHandler(userServ)
 
-	router.InitRouter(userHandler)
+	hub := ws.NewHub()
+	wsHandler := ws.NewHandler(hub)
+
+	router.InitRouter(userHandler, wsHandler)
 	router.Start(":8080") // Port
 }
