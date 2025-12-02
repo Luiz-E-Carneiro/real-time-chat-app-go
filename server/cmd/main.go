@@ -22,6 +22,7 @@ func main() {
 
 	hub := ws.NewHub()
 	wsHandler := ws.NewHandler(hub)
+	go hub.Run()
 
 	router.InitRouter(userHandler, wsHandler)
 	router.Start(":8080") // Port

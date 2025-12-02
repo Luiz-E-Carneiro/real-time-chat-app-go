@@ -19,6 +19,7 @@ func InitRouter(userHandler *user.Handler, wsHandler *ws.Handler) {
 	r.GET("/users/logout", userHandler.Logout)
 
 	r.POST("/ws/createRoom", wsHandler.CreateRoom)
+	r.GET("/ws/joinRoom/:roomId", wsHandler.JoinRoom)
 }
 
 // run the server
