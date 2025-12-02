@@ -94,6 +94,7 @@ type RoomRes struct {
 func (h *Handler) GetRooms(c *gin.Context) {
 	rooms := make([]RoomRes, 0)
 
+	// gather all rooms from the hub
 	for _, r := range h.hub.Rooms {
 		rooms = append(rooms, RoomRes{
 			ID:   r.ID,
@@ -115,11 +116,13 @@ func (h *Handler) GetClients(c *gin.Context) {
 
 	roomId := c.Param("roomId")
 
+	// make sure the room exists
 	if _, ok := h.hub.Rooms[roomId]; !ok {
 		clients = make([]ClientsRes, 0)
 		c.JSON(http.StatusOK, clients)
 	}
 
+	// gather clients in the room
 	for _, cl := range h.hub.Rooms[roomId].Clients {
 		clients = append(clients, ClientsRes{
 			ID:       cl.ID,

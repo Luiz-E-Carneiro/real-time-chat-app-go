@@ -36,11 +36,13 @@ func (c *Client) writeMessage() {
 }
 
 func (c *Client) readMessage(hub *Hub) {
+	// unregister client on exit
 	defer func() {
 		hub.Unregister <- c
 		c.Conn.Close()
 	}()
 
+	// read messages in a loop
 	for {
 		_, m, err := c.Conn.ReadMessage()
 		if err != nil {

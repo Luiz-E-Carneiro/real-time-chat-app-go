@@ -23,8 +23,9 @@ func NewHub() *Hub {
 	}
 }
 
-
+// main event loop for the Hub
 func (h *Hub) Run() {
+	// infinite loop to handle incoming events
 	for {
 		select {
 		case cl := <-h.Register:
@@ -50,7 +51,6 @@ func (h *Hub) Run() {
 					close(cl.Message)
 				}
 			}
-
 		case m := <-h.Broadcast:
 			if _, ok := h.Rooms[m.RoomID]; ok {
 
