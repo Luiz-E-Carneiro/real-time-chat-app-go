@@ -38,7 +38,7 @@ O back-end em Go é estruturado para manter uma **conexão persistente** (WebSoc
 
 O projeto está sendo construído em fases modulares, seguindo a arquitetura em camadas (Handler, Service, Repository).
 
-### **M1: 📘 Setup, Estudo e Ambientação com Go (Concluído)**
+### **M1: Setup, Estudo e Ambientação com Go (Concluído)**
 
 Fase inicial dedicada ao setup do ambiente e à base da linguagem.
 
@@ -47,7 +47,7 @@ Fase inicial dedicada ao setup do ambiente e à base da linguagem.
     * Instalação e configuração do Go e Docker na máquina de desenvolvimento.
     * Estudo e aplicação dos fundamentos da sintaxe e estruturas da linguagem Go.
 
-### **M2: 🔌 Configuração DB e Usuários (Concluído)**
+### **M2: Configuração DB e Usuários (Concluído)**
 
 Fase de estabelecimento da persistência e da primeira camada do domínio (usuário).
 
@@ -58,7 +58,7 @@ Fase de estabelecimento da persistência e da primeira camada do domínio (usuá
     * Criação e teste dos endpoints de autenticação: **Sign Up**, **Login** e **Log Out**.
     * Uso de **`golang-migrate`** para gerenciar o schema da tabela `users`.
 
-### **M3: 🔑 Autenticação e Lógica de Negócios**
+### **M3: Autenticação e Lógica de Negócios**
 
 Fase de finalização do domínio do usuário com lógica de segurança e implementação do Service.
 
@@ -69,7 +69,7 @@ Fase de finalização do domínio do usuário com lógica de segurança e implem
     * Configuração de autenticação via **Cookies HTTP-Only**.
     * Conclusão e integração de todas as camadas do módulo `user`.
 
-### **M4: 🧭 Estruturação do Chat, Salas e WebSockets (Concluído)** 
+### **M4: Estruturação do Chat, Salas e WebSockets (Concluído)** 
 
 * **Foco:** Implementação completa da estrutura de comunicação em tempo real usando WebSockets e organização da lógica de salas.
 
@@ -97,3 +97,64 @@ Fase de finalização do domínio do usuário com lógica de segurança e implem
    * Mensagens recebidas em tempo real.
    * Controle da sala atual.
    * Lógica inicial para exibição imediata das mensagens enviadas e recebidas.
+
+
+# 1. Como rodar a aplicação
+
+Antes de começar, é necessário ter instalado:
+
+| Ferramenta | Versão Utilizada no Projeto |
+|-----------|-----------------------------|
+| Go | 1.22+ |
+| Docker | 24+ |
+| Docker Desktop | qualquer versão recente |
+| PostgreSQL (Docker Image) | postgres:15-alpine |
+| golang-migrate (CLI) | 4.16+ |
+| Node.js | 18+ (para o frontend Next.js) |
+| npm | 9+ |
+
+---
+
+# 2. Clonar o Repositório
+
+Para clonar o projeto e entrar no diretório:
+
+```bash
+git clone https://github.com/Luiz-E-Carneiro/real-time-chat-app-go
+cd real-time-chat-app-go
+```
+# 3. Subir o PostgreSQL via Docker (Makefile)
+
+O projeto possui targets no arquivo `Makefile` para facilitar a configuração e execução do banco de dados.
+
+## Iniciar o container do PostgreSQL
+
+Para subir o container:
+
+```bash
+make postgresinit
+```
+
+Outras funções para configurar o banco:
+
+```bash
+make createdb
+
+docker exec -it postgres15 createdb --username=root --owner=root go-chat
+
+docker exec -it postgres15 psql
+
+migrate -path db/migrations \
+  -database "postgresql://root:password@localhost:5432/go-chat?sslmode=disable" \
+  -verbose up
+```
+
+Rodar o código:
+
+```bash
+cd server
+go run main.go
+
+cd client
+npm install
+npm run dev
