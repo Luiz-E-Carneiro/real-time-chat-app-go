@@ -58,7 +58,7 @@ Fase de estabelecimento da persistência e da primeira camada do domínio (usuá
     * Criação e teste dos endpoints de autenticação: **Sign Up**, **Login** e **Log Out**.
     * Uso de **`golang-migrate`** para gerenciar o schema da tabela `users`.
 
-### **M3: 🔑 Autenticação e Lógica de Negócios (Concluído)**
+### **M3: 🔑 Autenticação e Lógica de Negócios**
 
 Fase de finalização do domínio do usuário com lógica de segurança e implementação do Service.
 
@@ -68,3 +68,32 @@ Fase de finalização do domínio do usuário com lógica de segurança e implem
     * Configuração da geração e uso de **JWT** (JSON Web Tokens).
     * Configuração de autenticação via **Cookies HTTP-Only**.
     * Conclusão e integração de todas as camadas do módulo `user`.
+
+### **M4: 🧭 Estruturação do Chat, Salas e WebSockets (Concluído)** 
+
+* **Foco:** Implementação completa da estrutura de comunicação em tempo real usando WebSockets e organização da lógica de salas.
+
+* **Ações Concluídas:**
+
+* Backend
+
+   * Implementação do WebSocket handler (/ws/joinRoom).
+   * Criação do Hub, responsável por:
+   * Registrar e desregistrar clientes com segurança.
+   * Organizar os clientes por Room.
+   * Controlar concorrência via channels.
+   * Implementação da entidade Client, incluindo:
+   * Leitura de mensagens (readMessage).
+   * Escrita de mensagens (writeMessage).
+   * Comunicação eficiente com o Hub.
+   * Fila de broadcast para envio de mensagens para os participantes da mesma sala.
+   * Criação de estruturas para múltiplas salas (Rooms).
+
+* Frontend
+  
+   * Estruturação inicial da interface do chat (Next.js + React).
+   * Integração com o servidor via WebSocket nativo.
+   * Estado global para:
+   * Mensagens recebidas em tempo real.
+   * Controle da sala atual.
+   * Lógica inicial para exibição imediata das mensagens enviadas e recebidas.
